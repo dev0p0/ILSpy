@@ -136,6 +136,8 @@ namespace ICSharpCode.Decompiler
 				functionPointers = false;
 				forEachWithGetEnumeratorExtension = false;
 				recordClasses = false;
+				withExpressions = false;
+				usePrimaryConstructorSyntax = false;
 			}
 		}
 
@@ -220,6 +222,42 @@ namespace ICSharpCode.Decompiler
 				if (recordClasses != value)
 				{
 					recordClasses = value;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		bool withExpressions = true;
+
+		/// <summary>
+		/// Use C# 9 <c>with</c> initializer expressions.
+		/// </summary>
+		[Category("C# 9.0 / VS 2019.8")]
+		[Description("DecompilerSettings.WithExpressions")]
+		public bool WithExpressions {
+			get { return withExpressions; }
+			set {
+				if (withExpressions != value)
+				{
+					withExpressions = value;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		bool usePrimaryConstructorSyntax = true;
+
+		/// <summary>
+		/// Use primary constructor syntax with records.
+		/// </summary>
+		[Category("C# 9.0 / VS 2019.8")]
+		[Description("DecompilerSettings.UsePrimaryConstructorSyntax")]
+		public bool UsePrimaryConstructorSyntax {
+			get { return usePrimaryConstructorSyntax; }
+			set {
+				if (usePrimaryConstructorSyntax != value)
+				{
+					usePrimaryConstructorSyntax = value;
 					OnPropertyChanged();
 				}
 			}
@@ -1717,7 +1755,8 @@ namespace ICSharpCode.Decompiler
 				{
 					csharpFormattingOptions = FormattingOptionsFactory.CreateAllman();
 					csharpFormattingOptions.IndentSwitchBody = false;
-					csharpFormattingOptions.ArrayInitializerWrapping = Wrapping.WrapAlways;
+					csharpFormattingOptions.ArrayInitializerWrapping = Wrapping.WrapIfTooLong;
+					csharpFormattingOptions.AutoPropertyFormatting = PropertyFormatting.SingleLine;
 				}
 				return csharpFormattingOptions;
 			}

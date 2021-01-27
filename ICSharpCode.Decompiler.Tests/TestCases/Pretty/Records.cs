@@ -1,8 +1,10 @@
 ﻿namespace ICSharpCode.Decompiler.Tests.TestCases.Pretty
 {
-	public record Empty
-	{
-	}
+	public record Base(string A);
+
+	public record Derived(int B) : Base(B.ToString());
+
+	public record Empty;
 
 	public record Fields
 	{
@@ -15,42 +17,56 @@
 
 	public record Pair<A, B>
 	{
-		public A First {
-			get;
-			init;
-		}
-		public B Second {
-			get;
-			init;
-		}
+		public A First { get; init; }
+		public B Second { get; init; }
+	}
+
+	public record PairWithPrimaryCtor<A, B>(A First, B Second);
+
+	public record PrimaryCtor(int A, string B);
+	public record PrimaryCtorWithField(int A, string B)
+	{
+		public double C;
+	}
+	public record PrimaryCtorWithProperty(int A, string B)
+	{
+		public double C { get; init; }
 	}
 
 	public record Properties
 	{
-		public int A {
-			get;
-			set;
-		}
-		public int B {
-			get;
-		}
+		public int A { get; set; }
+		public int B { get; }
 		public int C => 43;
-		public object O {
-			get;
-			set;
-		}
-		public string S {
-			get;
-			set;
-		}
-		public dynamic D {
-			get;
-			set;
-		}
+		public object O { get; set; }
+		public string S { get; set; }
+		public dynamic D { get; set; }
 
 		public Properties()
 		{
 			B = 42;
+		}
+	}
+
+	public class WithExpressionTests
+	{
+		public Fields Test(Fields input)
+		{
+			return input with {
+				A = 42,
+				B = 3.141,
+				C = input
+			};
+		}
+		public Fields Test2(Fields input)
+		{
+			return input with {
+				A = 42,
+				B = 3.141,
+				C = input with {
+					A = 43
+				}
+			};
 		}
 	}
 
@@ -65,10 +81,7 @@
 		{
 			public override string AbstractProp => "B";
 
-			public int? Value {
-				get;
-				set;
-			}
+			public int? Value { get; set; }
 		}
 
 		public record DerivedGeneric<T> : Pair<T, T?> where T : struct
@@ -76,9 +89,7 @@
 			public bool Flag;
 		}
 
-		public abstract string AbstractProp {
-			get;
-		}
+		public abstract string AbstractProp { get; }
 	}
 }
 namespace System.Runtime.CompilerServices
